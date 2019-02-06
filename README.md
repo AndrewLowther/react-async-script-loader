@@ -44,18 +44,28 @@ import scriptLoader from 'react-lazy-script-loader'
 
 class Editor extends Component {
   ...
+  
+  state = {
+    isScriptLoaded: false,
+    isScriptLoadSucceed: false
+  };
 
-  componentWillReceiveProps ({ isScriptLoaded, isScriptLoadSucceed }) {
-    if (isScriptLoaded && !this.props.isScriptLoaded) { // load finished
-      if (isScriptLoadSucceed) {
-        this.initEditor()
+  static getDerivedStateFromProps(props, state) {
+    if (
+      props.isScriptLoaded && 
+      state.isScriptLoaded === false
+    ) {
+      return {
+        isScriptLoaded: true,
+        isScriptLoadSucceed: props.isScriptLoadSucceed
       }
-      else this.props.onError()
     }
+
+    return null;
   }
 
   componentDidMount () {
-    const { isScriptLoaded, isScriptLoadSucceed } = this.props
+    const { isScriptLoadSucceed, isScriptLoaded } = this.state;
     if (isScriptLoaded && isScriptLoadSucceed) {
       this.initEditor()
     }
